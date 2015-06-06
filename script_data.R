@@ -11,3 +11,9 @@ list.files()
 library(haven)
 library(data.table)
 library(dplyr)
+
+class(data.table(read_sav("defuncion1990.sav")))
+
+data.table(read_sav("defuncion1990.sav"))[,.(PROV, ANON, MESN, ANOF, MESF, EDAD)]
+
+
