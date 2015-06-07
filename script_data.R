@@ -1,3 +1,4 @@
+############################
 ### Tablas de mortalidad ###
 ###      Script Data     ###
 ############################
@@ -14,6 +15,9 @@ library(dplyr)
 
 colnames(data.table(read_sav("defuncion1990.sav")))
 
-defun90 <- data.table(read_sav("defuncion1990.sav"))[,.(PROV, ANON, MESN, ANOF, MESF, EDAD)]
-plot(table(defun90[,EDAD]))
+defun90 <- data.table(read_sav("defuncion1990.sav"))[,.(PROV, ANON, MESN, ANOF, MESF, EDAD, ANIOS=ANOF-ANON-(MESN>MESF))]
+defun90
+defun90[,EDAD]
+plot(table(defun90[,ANIOS]))
+
 
