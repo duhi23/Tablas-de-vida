@@ -12,8 +12,8 @@ library(haven)
 library(data.table)
 library(dplyr)
 
-class(data.table(read_sav("defuncion1990.sav")))
+colnames(data.table(read_sav("defuncion1990.sav")))
 
-data.table(read_sav("defuncion1990.sav"))[,.(PROV, ANON, MESN, ANOF, MESF, EDAD)]
-
+defun90 <- data.table(read_sav("defuncion1990.sav"))[,.(PROV, ANON, MESN, ANOF, MESF, EDAD)]
+plot(table(defun90[,EDAD]))
 
