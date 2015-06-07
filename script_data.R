@@ -40,8 +40,12 @@ data$def11 <- data.table(read_sav("defuncion2011.sav"))[,.(prov_insc, anio_nac, 
 data$def12 <- data.table(read_sav("defuncion2012.sav"))[,.(prov_insc, anio_nac, mes_nac, anio_fall, mes_fall, edad, ANIO=2012)]
 data$def13 <- data.table(read_sav("defuncion2013.sav"))[,.(prov_insc, anio_nac, mes_nac, anio_fall, mes_fall, edad, ANIO=2013)]
 
-str(data)
-
+## Lista de defunciones
 defun <- lapply(seq_along(data), function(i){table(data[[i]][[6]])})
 
+
+table(data.table(read_sav("nacimiento1992.sav"))[ANIO_NAC %in% c(1992, 1991),])
+table(data.table(read_sav("nacimiento2010.sav"))[,ANIO_NAC])
+
+data.table(read_sav("nacimiento1992.sav"))[ANIO_NAC %in% c(1991, 1992),]
 
