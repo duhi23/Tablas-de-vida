@@ -40,12 +40,31 @@ data$def11 <- data.table(read_sav("defuncion2011.sav"))[,.(prov_insc, sexo, anio
 data$def12 <- data.table(read_sav("defuncion2012.sav"))[,.(prov_insc, sexo, anio_nac, mes_nac, anio_fall, mes_fall, edad, ANIO=2012)]
 data$def13 <- data.table(read_sav("defuncion2013.sav"))[,.(prov_insc, sexo, anio_nac, mes_nac, anio_fall, mes_fall, edad, ANIO=2013)]
 
+# Eliminar edades de 999 de la base del 2013
+
 ## Lista de defunciones
 defun <- lapply(seq_along(data), function(i){table(data[[i]][[7]], data[[i]][[2]])})
 
+lapply(seq_along(data), function(i){max(data[[i]][[7]])})
 
 table(data.table(read_sav("nacimiento1992.sav"))[ANIO_NAC %in% c(1992, 1991),])
 table(data.table(read_sav("nacimiento2010.sav"))[,ANIO_NAC])
 
 data.table(read_sav("nacimiento1992.sav"))[ANIO_NAC %in% c(1991, 1992),]
 
+
+
+### Datos Censo 2010 ###
+library(readxl)
+library(data.table)
+ls("package:readxl")
+
+censo <- data.table(read_excel("censo2010.xlsx"))
+censo$Hombre <- as.numeric(censo$Hombre)
+censo$Mujer <- as.numeric(censo$Mujer)
+censo$Total <- as.numeric(censo$Total)
+censo$Edad <- as.numeric(censo$Edad)
+
+summary(censo[,.(Hombre, Mujer, Total)])
+
+## 
