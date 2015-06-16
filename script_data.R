@@ -50,8 +50,6 @@ lapply(seq_along(data), function(i){max(data[[i]][[7]])})
 table(data.table(read_sav("nacimiento1992.sav"))[ANIO_NAC %in% c(1992, 1991),])
 table(data.table(read_sav("nacimiento2010.sav"))[,ANIO_NAC])
 
-data.table(read_sav("nacimiento1992.sav"))[ANIO_NAC %in% c(1991, 1992),]
-
 
 ### Datos Censo 2010 ###
 library(readxl)
@@ -83,21 +81,22 @@ plot(censo$Hombre, main='Población 2010', type='l', col="green", xlim=c(0,125),
 qxh10 <- c(as.vector(defun[[1]][,1]), numeric(22))/censo$Hombre # Hombres
 
 ## Ratios 2011
-lxh11 <- censo$Hombre - c(as.vector(defun[[1]][,1]), numeric(22))
+table(data.table(read_sav("nacimiento2011.sav"))[anio_nac %in% c(2010, 2011),.(sexo)])
+lxh11 <- c(154766, censo$Hombre)[1:121] - c(as.vector(defun[[1]][,1]), numeric(22))
 qxh11 <- c(as.vector(defun[[2]][,1]), numeric(22))/lxh11
 
 ## Ratios 2012
-lxh12 <- lxh11 - c(as.vector(defun[[2]][,1]), numeric(22))
+table(data.table(read_sav("nacimiento2012.sav"))[anio_nac %in% c(2011, 2012),.(sexo)])
+lxh12 <- c(156685, lxh11)[1:121] - c(as.vector(defun[[2]][,1]), numeric(22))
 qxh12 <- c(as.vector(defun[[3]][,1]), numeric(22))/lxh12
 
+## Ratios 2013
+table(data.table(read_sav("nacimiento2013.sav"))[anio_nac %in% c(2012, 2013),.(sexo)])
+lxh13 <- c(144546, lxh12)[1:121] - c(as.vector(defun[[3]][,1]), numeric(22))
+qxh13 <- c(as.vector(defun[[4]][,1])[1:113], numeric(8))/lxh13
 
-dx10 <- defun[[1]][,1]
-colnames(dx10) <- c("H", "M")
 
-
-
-setnames(DT,c("V1","V2"), c("V2.rating","V3.DataCamp"))
-         
-
+qxh <- data.frame(qxh10, qxh11, qxh12, qxh13)
+save(list = c("qxh"), file = "Hombres.RData", envir = .GlobalEnv)
 
 
