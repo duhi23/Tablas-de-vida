@@ -53,18 +53,51 @@ table(data.table(read_sav("nacimiento2010.sav"))[,ANIO_NAC])
 data.table(read_sav("nacimiento1992.sav"))[ANIO_NAC %in% c(1991, 1992),]
 
 
-
 ### Datos Censo 2010 ###
 library(readxl)
 library(data.table)
 ls("package:readxl")
+
+setwd(dir.pro)
 
 censo <- data.table(read_excel("censo2010.xlsx"))
 censo$Hombre <- as.numeric(censo$Hombre)
 censo$Mujer <- as.numeric(censo$Mujer)
 censo$Total <- as.numeric(censo$Total)
 censo$Edad <- as.numeric(censo$Edad)
+# Eliminamos la columna del total
+DT[, V1 := NULL]
+censo[,Total:=NULL]
 
-summary(censo[,.(Hombre, Mujer, Total)])
+summary(censo[,.(Hombre, Mujer)])
 
-## 
+## Diferencias de poblacion
+plot(censo$Mujer, main='Población 2010', type='l', col="red", xlim=c(0,125), ylim=c(0,200000), 
+     xlab='Años', ylab='Casos')
+par(new=TRUE)
+plot(censo$Hombre, main='Población 2010', type='l', col="green", xlim=c(0,125), ylim=c(0,200000), 
+     xlab='Años', ylab='Casos')
+
+### Calculo probabilidad de muerte ###
+## Ratios 2010
+qxh10 <- c(as.vector(defun[[1]][,1]), numeric(22))/censo$Hombre # Hombres
+
+## Ratios 2011
+lxh11 <- censo$Hombre - c(as.vector(defun[[1]][,1]), numeric(22))
+qxh11 <- c(as.vector(defun[[2]][,1]), numeric(22))/lxh11
+
+## Ratios 2012
+lxh12 <- lxh11 - c(as.vector(defun[[2]][,1]), numeric(22))
+qxh12 <- c(as.vector(defun[[3]][,1]), numeric(22))/lxh12
+
+
+dx10 <- defun[[1]][,1]
+colnames(dx10) <- c("H", "M")
+
+
+
+setnames(DT,c("V1","V2"), c("V2.rating","V3.DataCamp"))
+         
+
+
+
