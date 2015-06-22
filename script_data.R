@@ -79,24 +79,36 @@ plot(censo$Hombre, main='Población 2010', type='l', col="green", xlim=c(0,125),
 ### Calculo probabilidad de muerte ###
 ## Ratios 2010
 qxh10 <- c(as.vector(defun[[1]][,1]), numeric(22))/censo$Hombre # Hombres
+qxm10 <- c(as.vector(defun[[1]][,2]), numeric(22))/censo$Mujer # Mujeres
 
 ## Ratios 2011
 table(data.table(read_sav("nacimiento2011.sav"))[anio_nac %in% c(2010, 2011),.(sexo)])
 lxh11 <- c(154766, censo$Hombre)[1:121] - c(as.vector(defun[[1]][,1]), numeric(22))
 qxh11 <- c(as.vector(defun[[2]][,1]), numeric(22))/lxh11
 
+lxm11 <- c(148227, censo$Mujer)[1:121] - c(as.vector(defun[[1]][,2]), numeric(22))
+qxm11 <- c(as.vector(defun[[2]][,2]), numeric(22))/lxm11
+
 ## Ratios 2012
 table(data.table(read_sav("nacimiento2012.sav"))[anio_nac %in% c(2011, 2012),.(sexo)])
 lxh12 <- c(156685, lxh11)[1:121] - c(as.vector(defun[[2]][,1]), numeric(22))
 qxh12 <- c(as.vector(defun[[3]][,1]), numeric(22))/lxh12
+
+lxm12 <- c(149878, lxm11)[1:121] - c(as.vector(defun[[2]][,2]), numeric(22))
+qxm12 <- c(as.vector(defun[[3]][,2]), numeric(22))/lxm12
 
 ## Ratios 2013
 table(data.table(read_sav("nacimiento2013.sav"))[anio_nac %in% c(2012, 2013),.(sexo)])
 lxh13 <- c(144546, lxh12)[1:121] - c(as.vector(defun[[3]][,1]), numeric(22))
 qxh13 <- c(as.vector(defun[[4]][,1])[1:113], numeric(8))/lxh13
 
+lxm13 <- c(138422, lxm12)[1:121] - c(as.vector(defun[[3]][,2]), numeric(22))
+qxm13 <- c(as.vector(defun[[4]][,2])[1:113], numeric(8))/lxm13
+
 
 qxh <- data.frame(qxh10, qxh11, qxh12, qxh13)
 save(list = c("qxh"), file = "Hombres.RData", envir = .GlobalEnv)
 
+qxm <- data.frame(qxm10, qxm11, qxm12, qxm13)
+save(list = c("qxm"), file = "Mujeres.RData", envir = .GlobalEnv)
 
