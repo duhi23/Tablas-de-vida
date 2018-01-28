@@ -10,10 +10,10 @@ lapply(libs, require, character.only = T)
 # setwd("/Volumes/TOSHIBA EXT/Diego/Proyectos/Proyecto_Semilla")
 
 # la data tiene el último registro repetido para mejorar la estimación de la edad 100 por splines
-pob_h <- read_excel("datos_estimados.xlsx", sheet = 2)[1:98,]
-pob_m <- read_excel("datos_estimados.xlsx", sheet = 3)[1:98,]
-defun_h <- read_excel("datos_estimados.xlsx", sheet = 4)[1:98,]
-defun_m <- read_excel("datos_estimados.xlsx", sheet = 5)[1:98,]
+pob_h <- pob_h1 <- read_excel("datos_estimados.xlsx", sheet = 2)[1:98,]
+pob_m <- pob_m1 <- read_excel("datos_estimados.xlsx", sheet = 3)[1:98,]
+defun_h <- defun_h1 <- read_excel("datos_estimados.xlsx", sheet = 4)[1:98,]
+defun_m <- defun_m1 <- read_excel("datos_estimados.xlsx", sheet = 5)[1:98,]
 
 suavizar <- function(data){
    n_dim <- dim(data)
@@ -29,20 +29,31 @@ suavizar <- function(data){
 pob_h <- suavizar(pob_h)[1:98,][1:91,]
 pob_m <- suavizar(pob_m)[1:98,][1:91,]
 
-plot(pob_h[,1], col=2, ylim=c(0,160000))
+# Suavizado de población 
+plot(pob_h[,1], col=4, ylim=c(0,137000), xlim=c(0,90), type='o', ylab='Individuos', xlab='Edad',
+     main='Población Hombres - 1990')
 par(new=TRUE)
-plot(pob_h[,12], col=3, ylim=c(0,160000))
+plot(pob_h1[[2]][1:98], col=2, ylim=c(0,137000), xlim=c(0,90), type='l', ylab='Individuos', xlab='Edad',
+     main='Población Hombres - 1990')
+
+plot(pob_m[,12], col=4, ylim=c(0,138000), xlim=c(0,90), type='o', ylab='Individuos', xlab='Edad',
+     main='Población Mujeres - 2001')
 par(new=TRUE)
-plot(pob_h[,21], col=4, ylim=c(0,160000))
+plot(pob_m1[[13]][1:98], col=2, ylim=c(0,138000), xlim=c(0,90), type='l', ylab='Individuos', xlab='Edad',
+     main='Población Mujeres - 2001')
+
+
 
 defun_h <- suavizar(defun_h)[1:96,][1:91,]
 defun_m <- suavizar(defun_m)[1:96,][1:91,]
 
-plot(defun_h[,1], col=2, ylim=c(0,4000))
+# Suavizado de defunciones
+plot(defun_h[,1], col=4, ylim=c(0,4000), xlim=c(0,90), type='o', ylab='Defunciones', xlab='Edad',
+     main='Defunciones Hombres - 1990')
 par(new=TRUE)
-plot(defun_h[,12], col=3, ylim=c(0,4000))
-par(new=TRUE)
-plot(defun_h[,21], col=4, ylim=c(0,4000))
+plot(defun_h1[[2]][1:98], col=2, ylim=c(0,4000), xlim=c(0,90), type='l', ylab='Defunciones', xlab='Edad',
+     main='Defunciones Hombres - 1990')
+
 
 qxt <- function(pob, defun){
    res <- mat.or.vec(91,25) # 91 edades - 26 años (-1 por cálculo)
@@ -154,8 +165,9 @@ denuit <- function(data,x0){
    return(new.data)
 }
 
+# Recibe los mxt y los suaviza para las edades avanzadas
+denuit(mxt(qxt(pob_h, defun_h)), 70)
 
-denuit(qxt(pob_h, defun_h), 65)
 
 # Gráfico 3 dimensiones - Mortalidad suavizada
 edad <- seq(1,91,by=1)
@@ -194,12 +206,14 @@ svd_est <-function(mxt_data, ax_data){
    est.svd$u <- -1*est.svd$u
    est.svd$v <- -1*est.svd$v
    
-   svd.list$s <- est.svd$d/sum(est.svd$d)
+   svd.list$s <- order(est.svd$d)/sum(est.svd$d)
    sum.c <- sum(est.svd$u[,1])
    svd.list$k <- sum.c*(est.svd$d[1]*est.svd$v[,1])
    svd.list$b <- est.svd$u[,1]/sum.c
    return(svd.list)
 }
 
-plot(svd_est(mxt(qxt(pob_h, defun_h)), ax(denuit(mxt(qxt(pob_h, defun_h)),70)))$b)
-plot(svd_est(mxt(qxt(pob_m, defun_m)), ax(denuit(mxt(qxt(pob_m, defun_m)),70)))$b, type='l')
+
+plot(svd_est(denuit(mxt(qxt(pob_h, defun_h)), 70), ax(denuit(mxt(qxt(pob_h, defun_h)),70)))$k, type='l')
+
+plot(svd_est(denuit(mxt(qxt(pob_m, defun_m)), 70), ax(denuit(mxt(qxt(pob_m, defun_m)),70)))$k, type='l')
